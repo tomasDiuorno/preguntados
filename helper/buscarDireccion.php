@@ -54,7 +54,6 @@ if ($httpCode !== 200 || !$response) {
     exit;
 }
 
-// 6. Si todo salió bien, devolver la respuesta JSON
 header('Content-Type: application/json');
 echo $response;
 
