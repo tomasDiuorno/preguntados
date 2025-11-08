@@ -1,0 +1,61 @@
+<main class="w-full p-8 flex flex-col gap-8 text-[#E2E4F3]">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- COLUMNA IZQUIERDA -->
+        <aside class="md:col-span-1 flex flex-col items-center">
+
+          <!-- Foto de perfil -->
+          <img src="{{usuario.fotoDePerfil}}"
+              onerror="this.src='/public/placeholder.png'"
+              alt="Foto de perfil"
+              class="w-32 h-32 rounded-full object-cover border-4 border-[#E65895] shadow-lg" />
+
+            <!-- Nombre de usuario -->
+            {{#usuario}}
+            <h1 class="text-3xl font-bold text-center mt-4">{{nombreDeUsuario}}</h1>
+            {{#isEditor}}
+            <div class="mt-2 flex justify-center">
+                <span class="px-3 py-1 rounded-full bg-[#BC6BE8] text-sm font-semibold">Editor</span>
+            </div>
+            {{/isEditor}}
+            <!-- Contenedor de detalles personales -->
+            <div class="w-full bg-[#2c2f56] rounded-lg p-4 mt-8 space-y-4">
+
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-400 font-medium">Año de Nacimiento</span>
+                    <span class="font-semibold text-white">{{fechaNac}}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-400 font-medium">Sexo</span>
+                    <span class="font-semibold text-white">{{sexo}}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-400 font-medium">Miembro desde</span>
+                    <span class="font-semibold text-white">Oct 2025</span> <!-- Dato de ejemplo -->
+                </div>
+            </div>
+
+            <!-- Botón de Compartir -->
+            <button class="w-full mt-6 py-3 rounded-lg bg-gradient-to-r from-[#E65895] to-[#BC6BE8] text-white font-semibold hover:opacity-90 active:opacity-80 transition focus:outline-none focus:ring-2 focus:ring-[#BC6BE8] focus:ring-offset-2 focus:ring-offset-[#343964] flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                </svg>
+                Compartir Perfil
+            </button>
+        </aside>
+
+        <!--COLUMNA DERECHA  -->
+        <section class="md:col-span-2">
+            <h2 class="text-2xl font-bold mb-6 border-b-2 border-[#2c2f56] pb-2">Ubicación</h2>
+            <span class="font-semibold text-white">{{direccion}}</span>
+            <div id="map" data-direccion="{{direccion}}" class="w-full h-[250px] rounded-lg border border-gray-600"></div>
+        </section>
+
+            {{/usuario}}
+    </div>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/public/javascript/profileMap.js"></script>
+

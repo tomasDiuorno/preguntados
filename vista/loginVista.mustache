@@ -1,0 +1,77 @@
+<body class="bg-[#1e1f3b] bg-[url('/imagenes/bg.jpg')] bg-cover bg-center flex justify-center items-center min-h-screen py-12 px-4">
+
+<main class="bg-[#343964] rounded-2xl shadow-2xl w-full max-w-md h-auto p-8 flex flex-col gap-4 text-[#E2E4F3]">
+
+    <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#2c2f56] overflow-hidden">
+        <!-- Preview de foto de perfil si el usuario ya está registrado (carga vía AJAX al escribir el nombre) -->
+        <img id="loginProfilePreview" src="/public/placeholder.png" alt="Foto de perfil" class="h-20 w-20 object-cover rounded-full" />
+    </div>
+
+    <h1 class="text-3xl font-bold text-center">Ingresá a tu cuenta</h1>
+
+    {{#error}}
+        <div class="bg-red-900/50 border border-red-700 text-red-300 p-3 rounded-lg flex items-center gap-3 text-sm">
+            <svg class="h-5 w-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <span>{{error}}</span>
+        </div>
+    {{/error}}
+
+    <form class="flex flex-col justify-center items-center gap-0 space-y-6 w-full mt-4" method="POST" action="/index.php?controller=login&method=base" enctype="">
+
+        <div class="w-full">
+            <label  class="block text-sm font-semibold mb-2">Nombre usuario</label>
+            <input type="text" id="loginUsername" name="username" class="w-full p-3 rounded-lg bg-[#2c2f56] border border-gray-500 text-[#E2E4F3] focus:border-[#E65895] focus:ring-2 focus:ring-[#E65895] focus:outline-none transition" placeholder="Ej: Juan Pérez" required>
+        </div>
+        <div class="w-full">
+            <label class="block text-sm font-semibold mb-2">Contraseña</label>
+            <input name="password" type="password" class="w-full p-3 rounded-lg bg-[#2c2f56] border border-gray-500 text-[#E2E4F3] focus:border-[#E65895] focus:ring-2 focus:ring-[#E65895] focus:outline-none transition" placeholder="********" required>
+        </div>
+
+        <button type="submit" class="w-full mt-3 py-3 rounded-lg bg-gradient-to-r from-[#E65895] to-[#BC6BE8] text-white font-semibold hover:opacity-90 active:opacity-80 transition focus:outline-none focus:ring-2 focus:ring-[#BC6BE8] focus:ring-offset-2 focus:ring-offset-[#343964]">
+            Ingresar
+        </button>
+    </form>
+
+    <p class="text-sm text-center text-gray-400 mt-4">
+        ¿No tenés cuenta?
+        <a href="/register" class="font-semibold text-[#BC6BE8] hover:text-[#E65895] transition">
+            Registrate
+        </a>
+    </p>
+
+</main>
+</body>
+
+<script>
+    // Mostrar preview de foto al tipear el nombre de usuario
+    (function(){
+        const input = document.getElementById('loginUsername');
+        const img = document.getElementById('loginProfilePreview');
+        if (!input) return;
+
+        let timeout = null;
+        input.addEventListener('input', function(){
+            clearTimeout(timeout);
+            timeout = setTimeout(async () => {
+                const username = input.value.trim();
+                if (!username) {
+                    img.src = '/public/placeholder.png';
+                    return;
+                }
+                try {
+                    const res = await fetch(`/index.php?controller=login&method=obtenerUsuario&username=${encodeURIComponent(username)}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.fotoDePerfil) {
+                            img.src = data.fotoDePerfil;
+                        }
+                    }
+                } catch (err) {
+                    console.error('Error fetching profile preview', err);
+                }
+            }, 350);
+        });
+    })();
+</script>
