@@ -1,13 +1,16 @@
-<!-- <?php?>
-class EditorModel {
+<?php
+class EditorModel
+{
     private $db;
 
-    public function __construct($database) {
+    public function __construct($database)
+    {
         $this->db = $database;
     }
 
     // Crear pregunta (retorna id insertado)
-    public function createQuestion($categoriaId, $pregunta, $opciones, $correcta, $creatorId) {
+    public function createQuestion($categoriaId, $pregunta, $opciones, $correcta, $creatorId)
+    {
         $sql = "INSERT INTO preguntas (categoria_id, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, correcta, creador_id, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $stmt = $this->db->prepare($sql);
@@ -21,7 +24,8 @@ class EditorModel {
     }
 
     // Actualizar pregunta
-    public function updateQuestion($questionId, $categoriaId, $pregunta, $opciones, $correcta) {
+    public function updateQuestion($questionId, $categoriaId, $pregunta, $opciones, $correcta)
+    {
         $sql = "UPDATE preguntas SET categoria_id = ?, pregunta = ?, opcion_a = ?, opcion_b = ?, opcion_c = ?, opcion_d = ?, correcta = ?, updated_at = NOW()
                 WHERE id = ?";
         $stmt = $this->db->prepare($sql);
@@ -35,7 +39,8 @@ class EditorModel {
     }
 
     // "Eliminar" pregunta (marcar como eliminada) o borrado real: aquí hacemos soft delete (flag)
-    public function softDeleteQuestion($questionId, $reviewerId) {
+    public function softDeleteQuestion($questionId, $reviewerId)
+    {
         $sql = "UPDATE preguntas SET deleted = 1, deleted_by = ?, deleted_at = NOW() WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param("ii", $reviewerId, $questionId);
@@ -47,7 +52,8 @@ class EditorModel {
     }
 
     // Restaurar pregunta (cuando se rechaza el reporte)
-    public function restoreQuestion($questionId) {
+    public function restoreQuestion($questionId)
+    {
         $sql = "UPDATE preguntas SET deleted = 0, deleted_by = NULL, deleted_at = NULL WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param("i", $questionId);
@@ -59,7 +65,8 @@ class EditorModel {
     }
 
     // Obtener reportes pendientes
-    public function getPendingReports() {
+    public function getPendingReports()
+    {
         $sql = "SELECT qr.*, p.pregunta, p.id as question_id, u.nombreDeUsuario as reporter 
                 FROM question_reports qr
                 LEFT JOIN preguntas p ON qr.question_id = p.id
@@ -71,7 +78,8 @@ class EditorModel {
     }
 
     // Marcar reporte aceptado/rechazado
-    public function reviewReport($reportId, $action, $reviewerId) {
+    public function reviewReport($reportId, $action, $reviewerId)
+    {
         // action = 'accepted' or 'rejected'
         // traemos el reporte para saber question_id
         $sqlGet = "SELECT question_id FROM question_reports WHERE id = ?";
@@ -103,7 +111,8 @@ class EditorModel {
     }
 
     // Sugerencias pendientes
-    public function getPendingSuggestions() {
+    public function getPendingSuggestions()
+    {
         $sql = "SELECT qs.*, u.nombreDeUsuario as submitter 
                 FROM question_suggestions qs
                 LEFT JOIN usuarios u ON qs.submitter_id = u.id
@@ -113,7 +122,8 @@ class EditorModel {
     }
 
     // Aceptar sugerencia: inserta en preguntas y marca suggestion como accepted
-    public function acceptSuggestion($suggestionId, $reviewerId) {
+    public function acceptSuggestion($suggestionId, $reviewerId)
+    {
         // obtener la sugerencia
         $sqlGet = "SELECT * FROM question_suggestions WHERE id = ?";
         $stmt = $this->db->prepare($sqlGet);
@@ -147,7 +157,8 @@ class EditorModel {
     }
 
     // Rechazar sugerencia
-    public function rejectSuggestion($suggestionId, $reviewerId) {
+    public function rejectSuggestion($suggestionId, $reviewerId)
+    {
         $sql = "UPDATE question_suggestions SET status = 'rejected', reviewed_by = ?, reviewed_at = NOW() WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param("ii", $reviewerId, $suggestionId);
@@ -157,4 +168,4 @@ class EditorModel {
         $stmt->close();
         return true;
     }
-} -->
+}
