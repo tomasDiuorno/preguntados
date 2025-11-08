@@ -34,7 +34,7 @@ function cargarImagenes() {
 
         categorias.forEach(categoria => {
             const img = new Image();
-            img.src = categoria.imagen;
+            img.src = categoria.images;
             img.onload = () => {
                 imagenesCargadas[categoria.descripcion] = img;
                 imagenesCargadasCount++;

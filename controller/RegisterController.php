@@ -33,25 +33,24 @@ class RegisterController
             //Verificacion de contraseña
             $passwordErrors = $this->verifyPassword($userData["password"], $userData["passwordRepeated"]);
             if (!empty($passwordErrors)) {
-                $this->renderer->render("register", ["error" => $passwordErrors, 'noNavbar' => true, 'noFooter' => true]);
+                $this->renderer->render("register", ["errors" => $passwordErrors, 'noNavbar' => true, 'noFooter' => true]);
                 return;
             }
 
             // Validar y procesar imagen
-            $userData['profilePic'] = $this->verifyImage($_FILES['profilePic'] ?? null);
-
+            //$userData['profilePic'] = $this->verifyImage($_FILES['profilePic'] ?? null);
+            $userData['profilePic'] = "/public/placeholder.png";
             try {
-
                 $this->model->registerUser($userData);
 
                 $this->renderer->render("login", ['noNavbar' => true, 'noFooter' => true]);
 
             } catch (\Exception $e) {
                 $messages = explode(" | ", $e->getMessage());
+                var_dump($e->getMessage());
                 foreach ($messages as $msg) {
                     $errors[] = $msg;
                 }
-
                 $this->renderer->render("register", ["errors" => $errors, 'noNavbar' => true, 'noFooter' => true]);
             }
         }
@@ -60,10 +59,10 @@ class RegisterController
     {
         $errors = [];
         if ($password !== $passwordRepeated) {
-            $errors = "Las contraseñas no coinciden";
+            $errors[] = "Las contraseñas no coinciden";
         }
         if (strlen($password) < 8) {
-            $errors = "La contraseña debe tener al menos 8 caracteres.";
+            $errors[] = "La contraseña debe tener al menos 8 caracteres.";
         }
         return $errors;
     }

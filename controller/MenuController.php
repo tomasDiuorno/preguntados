@@ -30,7 +30,6 @@ class MenuController{
         }
 
         $data["ranking"] = $this->model->getRankingLimitado(5);
-        // Renderizamos la vista con el nombre base 'menu' (Renderer agrega 'Vista' automáticamente)
         $this->renderer->render("menu", $data);
     }
 }

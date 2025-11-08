@@ -46,7 +46,7 @@ class RegisterModel
     {
         // Insertar con rol_id (por defecto 1 = jugador)
         $sql = "INSERT INTO usuario 
-        (nombreCompleto, nombreDeUsuario, mail, contrasenia, fechaNac, sexo, direccion, token, rol_id, fotoDePerfil)
+        (nombreCompleto, nombreDeUsuario, mail, contrasenia, fechaNac, sexo, token, fotoDePerfil, direccion, rol_id)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->conexion->prepare($sql);
@@ -59,23 +59,25 @@ class RegisterModel
         $foto = isset($userData['profilePic']) ? $userData['profilePic'] : '/public/placeholder.png';
 
         $stmt->bind_param(
-            "ssssssssss",
+            "sssssssssi",
             $userData["name"],
             $userData["username"],
             $userData["email"],
             $passwordHash,
             $userData["birthdate"],
             $userData["gender"],
-            $userData["address"],
             $tokenData["token"],
-            $rol,
-            $foto
+            $foto,
+            $userData["address"],
+            $rol
         );
 
         if (!$stmt->execute()) {
             throw new \Exception("Error al insertar usuario: " . $stmt->error);
         }
-
+        if ($stmt->affected_rows === 0) {
+            throw new \Exception("No se insertó ningún usuario, revisá los datos recibidos.");
+}
         $stmt->close();
     }
 
