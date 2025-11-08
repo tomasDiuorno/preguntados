@@ -24,7 +24,6 @@ class EditorController {
     public function base() {
         $this->requireEditor();
         $data = [];
-        $data['nombreDeUsuario'] = $_SESSION['nombreDeUsuario'] ?? null;
         $this->renderer->render('editor/dashboard', $data); // crear vista
     }
 

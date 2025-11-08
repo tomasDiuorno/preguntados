@@ -25,7 +25,10 @@ class MenuController{
             // Indicar a la vista si el usuario es editor (rol_id == 2)
             // Mostrar opciones de editor también para administradores (rol_id 3)
             $data["isEditor"] = isset($data["sesion"]) && isset($data["sesion"]["rol_id"]) && in_array(intval($data["sesion"]["rol_id"]), [2, 3], true);
+        }else{
+            header("location: /login");
         }
+
         $data["ranking"] = $this->model->getRankingLimitado(5);
         // Renderizamos la vista con el nombre base 'menu' (Renderer agrega 'Vista' automáticamente)
         $this->renderer->render("menu", $data);
